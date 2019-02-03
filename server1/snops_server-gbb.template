@@ -506,19 +506,19 @@
                                 "command": "apt-get -y install git"
                             },
                             "016-clone-repo": {
-                                "command": "git clone -b master https://github.com/gbbaus17/F5-Lab /home/ubuntu/F5-Lab"
+                                "command": "git clone -b master https://github.com/gbbaus17/snops-aws /home/ubuntu/F5-Lab"
                             },
                             "018-sleep-30": {
                                 "command": "sleep 30"
                             },
                             "025-chmod-setup-script": {
-                                "command": "chmod 775 /home/ubuntu/F5-Lab/server1/f5lab-server1-setup-latest.sh"
+                                "command": "chmod 775 /home/ubuntu/F5-Lab/server1/snops_server_setup-gbb.sh"
                             },
                             "026-sleep-5": {
                                 "command": "sleep 5"
                             },
                             "028-execute-script": {
-                                "command": "sh /home/ubuntu/F5-Lab/server1/f5lab-server1-setup-latest.sh"
+                                "command": "sh /home/ubuntu/F5-Lab/server1/snops_server_setup-gbb.sh"
                             }
                         }
                     }
