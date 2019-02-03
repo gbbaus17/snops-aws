@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "Ubuntu 18.04 LTS JumpHost for use with F5 labs https://clouddocs.f5.com/training/community/",
+    "Description": "Ubuntu 16.04 LTS JumpHost for use with F5 labs https://clouddocs.f5.com/training/community/",
     "Parameters": {
         "VPC": {
             "Description": "Existing F5 Lab VPC",
@@ -26,8 +26,8 @@
         },
         "CustomImageId": {
             "ConstraintDescription": "Must be a valid AMI Id",
-            "Default": "ami-0118debc71f4a5be3",
-            "Description": "Please specify the 'Ubuntu 18.04 LTS' AMI Id that you have Agreed to T&Cs [eg, Singapore=ami-042a84288996ec3c1; Sydney=ami-0118debc71f4a5be3]",
+            "Default": "ami-0d9c4a2f1c21c130d"",
+            "Description": "Please specify the 'Ubuntu 16.04 LTS' AMI Id that you have Agreed to T&Cs [eg, N.VA=ami-068ab34816099a0a9; SYD=ami-0d9c4a2f1c21c130d]",
             "MaxLength": 255,
             "MinLength": 1,
             "Type": "String"
@@ -286,12 +286,16 @@
 							   "#!/bin/bash\n",
 								"ifconfig eth0 ", { "Ref": "JumpHostLandingPrivateIP" }, " netmask 255.255.255.0\n",
 								"ifconfig eth1 ", {	"Ref": "JumpHostMngmtAccessIP" }, " netmask 255.255.255.0\n",
+								"ifconfig eth2 ", {	"Ref": "JumpHostInternalIP" }, " netmask 255.255.255.0\n",
 								"MYVARIP1=\"", { "Ref": "JumpHostMngmtAccessIP"	}, "\"\n",
+								"MYVARIP2=\"", { "Ref": "JumpHostLandingPrivateIP" }, "\"\n",
+								"MYVARIP3=\"", { "Ref": "JumpHostInternalIP" }, "\"\n",
 								"MYVAR1=$(sed 's/\\./-/g' <<< ${MYVARIP1})\n",
 								"echo \"${MYVARIP1} ip-${MYVAR1}\" >> /etc/hosts\n",
-								"MYVARIP2=\"", { "Ref": "JumpHostLandingPrivateIP" }, "\"\n",
 								"MYVAR2=$(sed 's/\\./-/g' <<< ${MYVARIP2})\n",
-								"echo \"${MYVARIP2} ip-${MYVAR2}\" >> /etc/hosts\n"
+								"echo \"${MYVARIP2} ip-${MYVAR2}\" >> /etc/hosts\n",
+								"MYVAR3=$(sed 's/\\./-/g' <<< ${MYVARIP3})\n",
+								"echo \"${MYVARIP3} ip-${MYVAR3}\" >> /etc/hosts\n"
 							  ]
 							 ]
 							},
@@ -307,7 +311,8 @@
 							   "#!/bin/bash\n",
 							   "echo \"#!/bin/sh -e\" > /etc/rc.local\n",
 							   "echo \"ifconfig eth0 ", { "Ref": "JumpHostLandingPrivateIP" }, " netmask 255.255.255.0\" >> /etc/rc.local\n",
-							   "echo \"ifconfig eth1 ", { "Ref": "JumpHostMngmtAccessIP" }, " netmask 255.255.255.0\" >> /etc/rc.local\n"
+							   "echo \"ifconfig eth1 ", { "Ref": "JumpHostMngmtAccessIP" }, " netmask 255.255.255.0\" >> /etc/rc.local\n",
+							   "echo \"ifconfig eth2 ", { "Ref": "JumpHostInternalIP" }, " netmask 255.255.255.0\" >> /etc/rc.local\n"
 							  ]
 							 ]
 							},
@@ -346,7 +351,16 @@
 									},
 									"\n",
 									"        netmask 255.255.255.0\n",
-									"\n"
+									"\n",
+									"auto eth2\n",
+									"iface eth2 inet static\n",
+									"        address ",
+									{
+										"Ref": "JumpHostInternalIP"
+									},
+									"\n",
+									"        netmask 255.255.255.0\n",
+									"\n"									
 									]
 								]
 							},
@@ -427,13 +441,13 @@
                                 "command": "sleep 30"
                             },
                             "016-change-mod-setup-script": {
-                                "command": "chmod 755 /home/ubuntu/F5-Lab/jumphost/snops_jumphost_setup-gbb.sh"
+                                "command": "chmod 755 /home/ubuntu/F5-Lab/jumphost/snops_jumphost_setup-2-gbb.sh"
                             },
                             "018-sleep-5": {
                                 "command": "sleep 5"
                             },							
                             "020-execute-jumphost-setup": {
-                                "command": "/home/ubuntu/F5-Lab/jumphost/snops_jumphost_setup-gbb.sh"
+                                "command": "/home/ubuntu/F5-Lab/jumphost/snops_jumphost_setup-2-gbb.sh"
                             }							
                         }
                     }
@@ -552,7 +566,7 @@
                             "Ref": "UbuntuEth2Interface"
                         },
                         "DeviceIndex": "2"
-                    }					
+                    }				
                 ]
             }
         },
@@ -686,13 +700,13 @@
             "ParameterGroups": [
                 {
                     "Label": {
-                        "default": "Note: You must first Accept Terms and Conditions for Ubuntu 18.04 LTS - Xenial HVM"
+                        "default": "Note: You must first Accept Terms and Conditions for Ubuntu 16.04 LTS - Xenial HVM"
                     },
                     "Parameters": []
                 },
                 {
                     "Label": {
-                        "default": "https://aws.amazon.com/marketplace/search/results?searchTerms=Ubuntu+18.04+LTS+%28HVM%29"
+                        "default": "https://aws.amazon.com/marketplace/search/results?searchTerms=Ubuntu+16.04+LTS+%28HVM%29"
                     },
                     "Parameters": []
                 },
