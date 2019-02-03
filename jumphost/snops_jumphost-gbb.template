@@ -626,13 +626,13 @@
             "ParameterGroups": [
                 {
                     "Label": {
-                        "default": "Note: You must first Accept Terms and Conditions for Ubuntu 16.04 LTS - Xenial HVM"
+                        "default": "Note: You must first Accept Terms and Conditions for Ubuntu 18.04 LTS - Xenial HVM"
                     },
                     "Parameters": []
                 },
                 {
                     "Label": {
-                        "default": "https://aws.amazon.com/marketplace/search/results?searchTerms=Ubuntu+16.04+LTS+%28HVM%29"
+                        "default": "https://aws.amazon.com/marketplace/search/results?searchTerms=Ubuntu+18.04+LTS+%28HVM%29"
                     },
                     "Parameters": []
                 },
