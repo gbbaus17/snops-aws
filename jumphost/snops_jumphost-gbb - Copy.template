@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "Ubuntu 18.04 LTS JumpHost for use with F5 labs https://clouddocs.f5.com/training/community/",
+    "Description": "Ubuntu 16.04 LTS JumpHost for use with F5 labs https://clouddocs.f5.com/training/community/",
     "Parameters": {
         "VPC": {
             "Description": "Existing F5 Lab VPC",
@@ -26,8 +26,8 @@
         },
         "CustomImageId": {
             "ConstraintDescription": "Must be a valid AMI Id",
-            "Default": "ami-0118debc71f4a5be3",
-            "Description": "Please specify the 'Ubuntu 18.04 LTS' AMI Id that you have Agreed to T&Cs [eg, SYD=ami-0118debc71f4a5be3]",
+            "Default": "ami-0d9c4a2f1c21c130d",
+            "Description": "Please specify the 'Ubuntu 16.04 LTS' AMI Id that you have Agreed to T&Cs [eg, N.VA=ami-068ab34816099a0a9; SYD=ami-0d9c4a2f1c21c130d]",
             "MaxLength": 255,
             "MinLength": 1,
             "Type": "String"
