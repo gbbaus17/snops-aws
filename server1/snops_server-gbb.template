@@ -78,15 +78,6 @@
             "MaxLength": 18,
             "MinLength": 9,
             "Type": "String"
-        },
-        "Server1Eth04PrivateIP": {
-            "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})",
-            "ConstraintDescription": "Must be a valid IP in xxxx Subnet",
-            "Default": "10.1.20.252",
-            "Description": "FPS Lab LAMP Server address- Lab Default is 10.1.20.252",
-            "MaxLength": 18,
-            "MinLength": 9,
-            "Type": "String"
         },		
         "ManagementSubnet": {
             "Description": "Existing F5Lab Mgmt subnet in the VPC",
@@ -183,7 +174,6 @@
                                             "# eth0:1 10.1.20.101 netmask 255.255.255.0\n",
                                             "# eth0:2 10.1.20.102 netmask 255.255.255.0\n",
                                             "# eth0:3 10.1.20.103 netmask 255.255.255.0\n",
-                                            "# eth0:4 10.1.20.252 netmask 255.255.255.0\n",
                                             "# eth1 10.1.1.250 netmask 255.255.255.0\n",
                                             "# eth1:1 10.1.1.15 netmask 255.255.255.0\n",
                                             "ifconfig eth0 ",
@@ -206,11 +196,6 @@
                                                 "Ref": "Server1Eth03PrivateIP"
                                             },
                                             " netmask 255.255.255.0\n",
-                                            "ifconfig eth0:4 ",
-                                            {
-                                                "Ref": "Server1Eth04PrivateIP"
-                                            },
-                                            " netmask 255.255.255.0\n",											
                                             "ifconfig eth1 ",
                                             {
                                                 "Ref": "Server1Eth1PrivateIP"
@@ -239,7 +224,6 @@
 								"echo \"ifconfig eth0:1 ",{ "Ref": "Server1Eth01PrivateIP" }, " netmask 255.255.255.0\" >> /etc/rc.local\n",
 								"echo \"ifconfig eth0:2 ",{ "Ref": "Server1Eth02PrivateIP" }, " netmask 255.255.255.0\" >> /etc/rc.local\n",
 								"echo \"ifconfig eth0:3 ",{ "Ref": "Server1Eth03PrivateIP" }, " netmask 255.255.255.0\" >> /etc/rc.local\n",
-								"echo \"ifconfig eth0:4 ",{ "Ref": "Server1Eth04PrivateIP" }, " netmask 255.255.255.0\" >> /etc/rc.local\n",
 								"echo \"ifconfig eth1 ",{ "Ref": "Server1Eth1PrivateIP" }, " netmask 255.255.255.0\" >> /etc/rc.local\n",
 								"echo \"ifconfig eth1:1 ",{ "Ref": "Server1Eth11PrivateIP" }, " netmask 255.255.255.0\" >> /etc/rc.local\n"
 							   ]
@@ -283,13 +267,6 @@
                                             "\"\n",
                                             "MYVAR03=$(sed 's/\\./-/g' <<< ${MYVARIP03})\n",
                                             "echo \"${MYVARIP03} ip-${MYVAR03}\" >> /etc/hosts\n",
-                                            "MYVARIP04=\"",
-                                            {
-                                                "Ref": "Server1Eth04PrivateIP"
-                                            },
-                                            "\"\n",
-                                            "MYVAR04=$(sed 's/\\./-/g' <<< ${MYVARIP04})\n",
-                                            "echo \"${MYVARIP04} ip-${MYVAR04}\" >> /etc/hosts\n",										
                                             "MYVARIP1=\"",
                                             {
                                                 "Ref": "Server1Eth1PrivateIP"
@@ -320,7 +297,6 @@
                                             "# eth0:1 10.1.20.101 netmask 255.255.255.0\n",
                                             "# eth0:2 10.1.20.102 netmask 255.255.255.0\n",
                                             "# eth0:3 10.1.20.103 netmask 255.255.255.0\n",
-											"# eth0:4 10.1.20.252 netmask 255.255.255.0\n",
                                             "# eth1 10.1.1.250 netmask 255.255.255.0\n",
                                             "# eth1:1 10.1.1.15 netmask 255.255.255.0\n",
                                             "#\n",
@@ -369,15 +345,6 @@
                                             "\n",
                                             "        netmask 255.255.255.0\n",
                                             "\n",
-											"auto eth0:4\n",
-                                            "iface eth0:4 inet static\n",
-                                            "        address ",
-                                            {
-                                                "Ref": "Server1Eth04PrivateIP"
-                                            },
-                                            "\n",
-                                            "        netmask 255.255.255.0\n",
-                                            "\n",											
                                             "auto eth1\n",
                                             "iface eth1 inet static\n",
                                             "        address ",
@@ -429,10 +396,6 @@
                                                 "Ref": "Server1Eth03PrivateIP"
                                             },
                                             ",",
-											{
-                                                "Ref": "Server1Eth04PrivateIP"
-                                            },
-                                            ",",											
                                             {
                                                 "Ref": "Server1Eth1PrivateIP"
                                             },
@@ -442,7 +405,7 @@
                                             },
                                             "\" >> /etc/dnsmasq.d/f5lab",
                                             "\n",
-                                            "echo \"no-dhcp-interface=lo0,eth0,eth0:1,eth0:2,eth0:3,eth0:4,eth1,eth1:1\" >> /etc/dnsmasq.d/f5lab",
+                                            "echo \"no-dhcp-interface=lo0,eth0,eth0:1,eth0:2,eth0:3,eth1,eth1:1\" >> /etc/dnsmasq.d/f5lab",
                                             "\n"
                                         ]
                                     ]
@@ -661,12 +624,6 @@
                             "Ref": "Server1Eth03PrivateIP"
                         },
                         "Primary": "false"
-                    },					
-                    {
-                        "PrivateIpAddress": {
-                            "Ref": "Server1Eth04PrivateIP"
-                        },
-                        "Primary": "false"
                     }
                 ],
                 "SourceDestCheck": "true",
@@ -855,7 +812,6 @@
                         "Server1Eth01PrivateIP",
                         "Server1Eth02PrivateIP",
                         "Server1Eth03PrivateIP",
-                        "Server1Eth04PrivateIP",						
                         "ManagementSubnet",
                         "Server1Eth1PrivateIP",
                         "Server1Eth11PrivateIP"
@@ -896,9 +852,6 @@
                 "Server1Eth03PrivateIP": {
                     "default": "Internal additional lab IP"
                 },
-                "Server1Eth04PrivateIP": {
-                    "default": "Internal FPS Lab LAMP IP"
-                },				
                 "Server1Eth1PrivateIP": {
                     "default": "Mngmt subnet Primary IP"
                 },
