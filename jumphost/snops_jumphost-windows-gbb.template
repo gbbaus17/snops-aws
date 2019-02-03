@@ -37,11 +37,25 @@
             "Description": "External Subnet: To access the JumpHost/Client",
             "Type": "AWS::EC2::Subnet::Id"
         },
+        "InternalSubnet": {
+            "ConstraintDescription": "The subnet ID must be within an existing VPC",
+            "Description": "Internal Subnet connectivity",
+            "Type": "AWS::EC2::Subnet::Id"
+        },
         "WinJumpHostLandingPrivateIP": {
             "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})",
             "ConstraintDescription": "Must be a valid IP in External / Access Subnet",
-            "Default": "10.1.20.21",
-            "Description": "Jumhost / Client External vlan address- Lab Default is 10.1.20.21",
+            "Default": "10.1.20.200",
+            "Description": "Jumhost / Client External vlan address- Lab Default is 10.1.20.200",
+            "MaxLength": 18,
+            "MinLength": 9,
+            "Type": "String"
+        },
+        "WinJumpHostInternalIP": {
+            "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})",
+            "ConstraintDescription": "Must be a valid IP in Internal Subnet",
+            "Default": "10.1.10.200",
+            "Description": "JumpHost Mngmt vlan address - Lab Default is 10.1.10.200",
             "MaxLength": 18,
             "MinLength": 9,
             "Type": "String"
@@ -49,8 +63,8 @@
         "WinJumpHostMngmtAccessIP": {
             "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})",
             "ConstraintDescription": "Must be a valid IP in Manangement Subnet",
-            "Default": "10.1.1.21",
-            "Description": "JumpHost Mngmt vlan address - Lab Default is 10.1.1.21",
+            "Default": "10.1.1.200",
+            "Description": "JumpHost Mngmt vlan address - Lab Default is 10.1.1.200",
             "MaxLength": 18,
             "MinLength": 9,
             "Type": "String"
@@ -64,16 +78,16 @@
             "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
             "ConstraintDescription": "must be a valid IP CIDR range of the form x.x.x.x/x."
         },
-		"sshKey": {
-			"Description": "Name of an EC2 KeyPair to enable Password decrypt to access Windows instance.",
-			"Type": "AWS::EC2::KeyPair::KeyName",
-			"ConstraintDescription": "must be the name of an existing EC2 KeyPair."
-		},
-	    "TimeZone": {
-		   "Default": "Australia/NSW",
-		   "Description": "Olson TimeZone string from /usr/share/zoneinfo eg: America/Los_Angeles",
-		   "Type": "String"
-  }
+        "sshKey": {
+            "Description": "Name of an EC2 KeyPair to enable Password decrypt to access Windows instance.",
+            "Type": "AWS::EC2::KeyPair::KeyName",
+            "ConstraintDescription": "must be the name of an existing EC2 KeyPair."
+        },
+        "TimeZone": {
+            "Default": "Australia/NSW",
+            "Description": "Olson TimeZone string from /usr/share/zoneinfo eg: America/Los_Angeles",
+            "Type": "String"
+        }
     },
     "Resources": {
         "ExternalSecurityGroup": {
@@ -157,22 +171,22 @@
                         "CidrIp": "0.0.0.0/0"
                     }
                 ],
-			"Tags": [
-				{
-					"Key": "Name",
-					"Value": {
-						"Fn::Join": [
-							"",
-							[
-								{
-									"Ref": "AWS::StackName"
-								},
-								":AllowAll_Security_Group"
-							]
-						]
-					}
-				}
-			]
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": {
+                            "Fn::Join": [
+                                "",
+                                [
+                                    {
+                                        "Ref": "AWS::StackName"
+                                    },
+                                    ":AllowAll_Security_Group"
+                                ]
+                            ]
+                        }
+                    }
+                ]
             },
             "Metadata": {
                 "AWS::CloudFormation::Designer": {
@@ -180,11 +194,15 @@
                 }
             }
         },
-
         "WinJumpHostEipAddress": {
             "Type": "AWS::EC2::EIP",
             "Properties": {
                 "Domain": "vpc"
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "fc89148f-7f65-4855-8110-536c700189b9"
+                }
             }
         },
         "WinExternalENI": {
@@ -195,14 +213,14 @@
                 "SubnetId": {
                     "Ref": "ExternalSubnet"
                 },
-				"PrivateIpAddresses": [
-					{
-						"PrivateIpAddress": {
-							"Ref": "WinJumpHostLandingPrivateIP"
-						},
-						"Primary": "true"
-					}
-				],
+                "PrivateIpAddresses": [
+                    {
+                        "PrivateIpAddress": {
+                            "Ref": "WinJumpHostLandingPrivateIP"
+                        },
+                        "Primary": "true"
+                    }
+                ],
                 "GroupSet": [
                     {
                         "Ref": "ExternalSecurityGroup"
@@ -214,6 +232,11 @@
                         "Value": "WIN:External"
                     }
                 ]
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "ca658120-ab13-4c51-b3b2-b4b282b44cf3"
+                }
             }
         },
         "WinInternalENI": {
@@ -221,16 +244,16 @@
             "Properties": {
                 "SourceDestCheck": "true",
                 "SubnetId": {
-                    "Ref": "ManagementSubnet"
+                    "Ref": "InternalSubnet"
                 },
-				"PrivateIpAddresses": [
-					{
-						"PrivateIpAddress": {
-							"Ref": "WinJumpHostMngmtAccessIP"
-						},
-						"Primary": "true"
-					}
-				],
+                "PrivateIpAddresses": [
+                    {
+                        "PrivateIpAddress": {
+                            "Ref": "WinJumpHostInternalIP"
+                        },
+                        "Primary": "true"
+                    }
+                ],
                 "GroupSet": [
                     {
                         "Ref": "AllowAllSecurityGroup"
@@ -242,16 +265,19 @@
                         "Value": "WIN:Internal"
                     }
                 ]
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "e031c58d-867b-4c1b-9daa-8a559b50d718"
+                }
             }
         },
-
-		
         "WindowsInstance": {
             "Type": "AWS::EC2::Instance",
             "Metadata": {
-                "AWS::CloudFormation::Init" : {
+                "AWS::CloudFormation::Init": {
                     "config": {
-                        "packages" : {
+                        "packages": {
                             "msi": {
                                 "chrome": "https://s3-us-west-1.amazonaws.com/snops-installers/googlechromestandaloneenterprise64.msi",
                                 "putty": "https://the.earth.li/~sgtatham/putty/latest/w64/putty-64bit-0.70-installer.msi",
@@ -264,11 +290,20 @@
                             }
                         },
                         "commands": {
-                            "a_cmd_shortcut": { "command": "mklink \"c:\\users\\administrator\\desktop\\Command Prompt\" c:\\windows\\system32\\cmd.exe" },
-                            "b_create_putty_shortcut": { "command": "mklink c:\\users\\administrator\\desktop\\PuTTY \"c:\\Program Files\\PuTTY\\putty.exe\"" },
-                            "z_done": { "command": "echo \"DONE\" > C:\\users\\Administrator\\desktop\\READY.txt" }
+                            "a_cmd_shortcut": {
+                                "command": "mklink \"c:\\users\\administrator\\desktop\\Command Prompt\" c:\\windows\\system32\\cmd.exe"
+                            },
+                            "b_create_putty_shortcut": {
+                                "command": "mklink c:\\users\\administrator\\desktop\\PuTTY \"c:\\Program Files\\PuTTY\\putty.exe\""
+                            },
+                            "z_done": {
+                                "command": "echo \"DONE\" > C:\\users\\Administrator\\desktop\\READY.txt"
+                            }
                         }
                     }
+                },
+                "AWS::CloudFormation::Designer": {
+                    "id": "9e0cec7e-69c9-4dbf-8796-8fa08e320963"
                 }
             },
             "Properties": {
@@ -276,42 +311,42 @@
                 "InstanceInitiatedShutdownBehavior": "stop",
                 "ImageId": {
                     "Ref": "CustomImageId"
-                },				
+                },
                 "InstanceType": "c1.xlarge",
                 "KeyName": {
                     "Ref": "sshKey"
                 },
                 "Monitoring": "false",
-				"Tags": [
+                "Tags": [
                     {
                         "Key": "Name",
                         "Value": {
                             "Fn::Join": [
                                 "",
                                 [
-								"SNOPS:WindowsInstance:",
+                                    "SNOPS:WindowsInstance:",
                                     {
                                         "Ref": "AWS::StackName"
                                     }
                                 ]
                             ]
                         }
-                    },				
+                    },
                     {
                         "Key": "RDPConnectivity",
-						"Value": {
-							"Fn::Join": [
-								"",
-								[
-									"mstsc.exe /f /v:",
-									{
-										"Ref": "WinJumpHostEipAddress"
-									}
-								]
-							]
-						}
-                    }					
-                ],								
+                        "Value": {
+                            "Fn::Join": [
+                                "",
+                                [
+                                    "mstsc.exe /f /v:",
+                                    {
+                                        "Ref": "WinJumpHostEipAddress"
+                                    }
+                                ]
+                            ]
+                        }
+                    }
+                ],
                 "NetworkInterfaces": [
                     {
                         "DeleteOnTermination": "true",
@@ -320,14 +355,14 @@
                         "SubnetId": {
                             "Ref": "ManagementSubnet"
                         },
-						"PrivateIpAddresses": [
-							{
-								"PrivateIpAddress": {
-									"Ref": "WinJumpHostMngmtAccessIP"
-								},
-								"Primary": "true"
-							}
-						],	
+                        "PrivateIpAddresses": [
+                            {
+                                "PrivateIpAddress": {
+                                    "Ref": "WinJumpHostMngmtAccessIP"
+                                },
+                                "Primary": "true"
+                            }
+                        ],
                         "GroupSet": [
                             {
                                 "Ref": "AllowAllSecurityGroup"
@@ -335,13 +370,27 @@
                         ]
                     }
                 ],
-                "UserData" : { "Fn::Base64" : { "Fn::Join" : ["", [
-                    "<script>\n",
-                    "cfn-init.exe -v -s ", { "Ref" : "AWS::StackId" },
-                    " -r WindowsInstance",
-                    " --region ", { "Ref" : "AWS::Region" }, "\n",
-                    "</script>"
-                ]]}}
+                "UserData": {
+                    "Fn::Base64": {
+                        "Fn::Join": [
+                            "",
+                            [
+                                "<script>\n",
+                                "cfn-init.exe -v -s ",
+                                {
+                                    "Ref": "AWS::StackId"
+                                },
+                                " -r WindowsInstance",
+                                " --region ",
+                                {
+                                    "Ref": "AWS::Region"
+                                },
+                                "\n",
+                                "</script>"
+                            ]
+                        ]
+                    }
+                }
             }
         },
         "AssociateEIP": {
@@ -356,9 +405,14 @@
                 "NetworkInterfaceId": {
                     "Ref": "WinExternalENI"
                 }
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "81daf2c2-b914-4191-8bfd-ff7fcb542870"
+                }
             }
         },
-		"WinExternalEniAttach": {
+        "WinExternalEniAttach": {
             "Type": "AWS::EC2::NetworkInterfaceAttachment",
             "Properties": {
                 "DeviceIndex": "2",
@@ -367,6 +421,11 @@
                 },
                 "InstanceId": {
                     "Ref": "WindowsInstance"
+                }
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "94961c64-62eb-4ee7-9a38-f5849c22021d"
                 }
             }
         },
@@ -384,8 +443,13 @@
             },
             "DependsOn": [
                 "AssociateEIP"
-            ]
-        }		
+            ],
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "6995d56d-338f-48c1-a212-a6a5d30b557b"
+                }
+            }
+        }
     },
     "Outputs": {
         "WinJumpHostPublicIP": {
@@ -451,7 +515,7 @@
                         "default": "The Lab TOPOLOGY template creates that for you. JumpHost Build takes ~10 min"
                     },
                     "Parameters": []
-                },				
+                },
                 {
                     "Label": {
                         "default": "--------------------------------------------------------------------------------------------------------------------------------------------------"
@@ -470,9 +534,11 @@
                         "restrictedSrcAddress",
                         "ExternalSubnet",
                         "WinJumpHostLandingPrivateIP",
+                        "InternalSubnet",
+                        "WinJumpHostInternalIP",
                         "ManagementSubnet",
                         "WinJumpHostMngmtAccessIP",
-						"TimeZone"						
+                        "TimeZone"
                     ]
                 }
             ],
@@ -489,63 +555,41 @@
                 "sshKey": {
                     "default": "KeyPair to enable SSH"
                 },
-                "ManagementSubnet": {
-                    "default": "F5Lab Mgmt subnet"
-                },
-                "WinJumpHostMngmtAccessIP": {
-                    "default": "F5Lab Mgmt subnet IP"
-                },
                 "ExternalSubnet": {
                     "default": "External subnet"
                 },
                 "WinJumpHostLandingPrivateIP": {
                     "default": "External subnet IP"
                 },
+                "InternalSubnet": {
+                    "default": "Internal subnet"
+                },
+                "WinJumpHostInternalIP": {
+                    "default": "Internal subnet IP"
+                },
+                "ManagementSubnet": {
+                    "default": "F5Lab Mgmt subnet"
+                },
+                "WinJumpHostMngmtAccessIP": {
+                    "default": "F5Lab Mgmt subnet IP"
+                },				
                 "restrictedSrcAddress": {
                     "default": "Restrict To"
                 },
-				"TimeZone": {
-					"default": "Timezone (Olson)"
-				}			
+                "TimeZone": {
+                    "default": "Timezone (Olson)"
+                }
             }
         },
         "AWS::CloudFormation::Designer": {
-            "2d6ab2c0-0c12-40ac-9a74-5e3c65551098": {
-                "size": {
-                    "width": 60,
-                    "height": 60
-                },
-                "position": {
-                    "x": 140,
-                    "y": 280
-                },
-                "z": 1,
-                "embeds": []
-            },
-            "08d9f152-ed15-4260-b501-81ac90812b04": {
-                "size": {
-                    "width": 60,
-                    "height": 60
-                },
-                "position": {
-                    "x": 410,
-                    "y": 280
-                },
-                "z": 1,
-                "embeds": [],
-                "isassociatedwith": [
-                    "7cc88848-aa14-4eea-8486-a959122a4f9f",
-                    "857ca6e7-e221-4908-87a0-568324f20ccb"
-                ]
-            },
             "5d5a4e1f-6916-4e1a-9857-37df8556389e": {
                 "size": {
                     "width": 60,
                     "height": 60
                 },
                 "position": {
-                    "x": 270,
-                    "y": 160
+                    "x": 690,
+                    "y": 110
                 },
                 "z": 1,
                 "embeds": []
@@ -556,20 +600,44 @@
                     "height": 60
                 },
                 "position": {
-                    "x": 530,
-                    "y": 170
+                    "x": 200,
+                    "y": 0
                 },
                 "z": 1,
                 "embeds": []
             },
-            "857ca6e7-e221-4908-87a0-568324f20ccb": {
+            "fc89148f-7f65-4855-8110-536c700189b9": {
                 "size": {
                     "width": 60,
                     "height": 60
                 },
                 "position": {
-                    "x": 530,
-                    "y": 280
+                    "x": 560,
+                    "y": 0
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "9e0cec7e-69c9-4dbf-8796-8fa08e320963": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 380,
+                    "y": 0
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "e031c58d-867b-4c1b-9daa-8a559b50d718": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 200,
+                    "y": 110
                 },
                 "z": 1,
                 "embeds": [],
@@ -577,14 +645,14 @@
                     "3758dcee-1594-4478-b95b-6637968a812d"
                 ]
             },
-            "7cc88848-aa14-4eea-8486-a959122a4f9f": {
+            "ca658120-ab13-4c51-b3b2-b4b282b44cf3": {
                 "size": {
                     "width": 60,
                     "height": 60
                 },
                 "position": {
-                    "x": 270,
-                    "y": 280
+                    "x": 560,
+                    "y": 110
                 },
                 "z": 1,
                 "embeds": [],
@@ -592,14 +660,29 @@
                     "5d5a4e1f-6916-4e1a-9857-37df8556389e"
                 ]
             },
-            "3cfbb825-a9be-4a95-becf-8f5dcfe5ebfc": {
+            "94961c64-62eb-4ee7-9a38-f5849c22021d": {
                 "source": {
-                    "id": "2d6ab2c0-0c12-40ac-9a74-5e3c65551098"
+                    "id": "ca658120-ab13-4c51-b3b2-b4b282b44cf3"
                 },
                 "target": {
-                    "id": "7cc88848-aa14-4eea-8486-a959122a4f9f"
+                    "id": "9e0cec7e-69c9-4dbf-8796-8fa08e320963"
+                }
+            },
+            "81daf2c2-b914-4191-8bfd-ff7fcb542870": {
+                "source": {
+                    "id": "fc89148f-7f65-4855-8110-536c700189b9"
                 },
-                "z": 1
+                "target": {
+                    "id": "ca658120-ab13-4c51-b3b2-b4b282b44cf3"
+                }
+            },
+            "6995d56d-338f-48c1-a212-a6a5d30b557b": {
+                "source": {
+                    "id": "e031c58d-867b-4c1b-9daa-8a559b50d718"
+                },
+                "target": {
+                    "id": "9e0cec7e-69c9-4dbf-8796-8fa08e320963"
+                }
             }
         }
     }
