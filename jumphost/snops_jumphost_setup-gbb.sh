@@ -13,8 +13,8 @@
 
 set -x
 
-#ifconfig eth0 10.1.20.10 netmask 255.255.255.0
-#ifconfig eth1 10.1.1.10 netmask 255.255.255.0
+#ifconfig eth0 10.1.20.20 netmask 255.255.255.0
+#ifconfig eth1 10.1.1.20 netmask 255.255.255.0
 
 
 # Disable SSH Host Key Checking for hosts in the lab
@@ -375,7 +375,7 @@ cat << 'EOF' >> /home/ubuntu/Desktop/SSH_Server1.desktop
 Version=1.0
 Name=SSH Server1
 Comment=
-Exec=ssh -X ubuntu@10.1.1.250
+Exec=ssh -X ubuntu@10.1.1.15
 Icon=accessories-character-map
 Terminal=true
 Type=Application
