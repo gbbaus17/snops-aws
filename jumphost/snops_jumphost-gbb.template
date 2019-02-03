@@ -322,7 +322,7 @@
 									"        netmask 255.255.255.0\n",
 									"        gateway 10.1.20.1\n",
 									"        dns-nameservers 8.8.8.8 8.8.4.4\n",
-									"        up route add -net 10.1.10.0 netmask 255.255.255.0 gw 10.1.20.245 dev eth0\n",
+									"        up route add -net 10.1.10.0 netmask 255.255.255.0 gw 10.1.20.10 dev eth0\n",
 									"\n",
 									"auto eth1\n",
 									"iface eth1 inet static\n",
