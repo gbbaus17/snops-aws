@@ -178,9 +178,9 @@ sleep 2
 
 
 # pull the f5-super-netops images : base, jenkins, ansible
-docker pull f5devcentral/f5-super-netops-container:base
-docker pull f5devcentral/f5-super-netops-container:jenkins
-docker pull f5devcentral/f5-super-netops-container:ansible
+#docker pull f5devcentral/f5-super-netops-container:base
+#docker pull f5devcentral/f5-super-netops-container:jenkins
+#docker pull f5devcentral/f5-super-netops-container:ansible
 #docker pull f5devcentral/f5-as3-container:latest
 #docker pull atmoz/sftp
 
@@ -281,7 +281,7 @@ chmod 775 /home/ubuntu/Desktop/Chrome.desktop
 
 
 touch /home/ubuntu/Desktop/F5-BigIP.desktop
-#cat << 'EOF' >> /home/ubuntu/Desktop/F5-BigIP.desktop
+cat << 'EOF' >> /home/ubuntu/Desktop/F5-BigIP.desktop
 [Desktop Entry]
 Version=1.0
 Type=Link
@@ -420,7 +420,11 @@ ln -s /home/ubuntu/F5-Lab/jumphost/client-files/make-tab-complete-work.sh /home/
 
 
 #Put a TXT link on the Desktop to enable SFTP
-ln -s /home/ubuntu/SFTP_Start_instructions.txt /home/ubuntu/Desktop/home/ubuntu/SFTP_Start_instructions.txt
+#ln -s /home/ubuntu/SFTP_Start_instructions.txt /home/ubuntu/Desktop/home/ubuntu/SFTP_Start_instructions.txt
+
+#Put a TXT link on the Desktop to docker run instructions
+ln -s /home/ubuntu/snops_docker_run_instructions.txt /home/ubuntu/Desktop/home/ubuntu/snops_docker_run_instructions.txt
+
 
 #Create new lab users
 # quietly add user without passwords
@@ -465,7 +469,7 @@ cat << 'EOF' >> /etc/rc.local
 # https://github.com/ArtiomL/f5-app-sec: Image has Audit Tool for ASM policies
 #docker run -dit --rm -p 8443:8443 artioml/f5-app-sec
 
-docker run -p 8080:80 -p 2222:22 -p 10000:8080 --name snops_jenkins --rm -it -e SNOPS_GH_BRANCH=master f5devcentral/f5-super-netops-container:jenkins
+#docker run -p 8080:80 -p 2222:22 -p 10000:8080 --name snops_jenkins --rm -it -e SNOPS_GH_BRANCH=master f5devcentral/f5-super-netops-container:jenkins
 
 EOF
 

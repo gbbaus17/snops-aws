@@ -361,7 +361,23 @@
 						"group": "root",
 						"mode": "000755",
 						"owner": "root"
-					   }
+					   },
+					   "/home/ubuntu/snops_docker_run_instructions.txt": {
+						"content": {
+							 "Fn::Join": [
+							  "",
+							  [
+							   "echo \"#To start the Super-Netops Docker conatiner, run the following:\n",
+							   "echo \"#\n",
+							   "echo \"sudo docker run -p 8080:80 -p 2222:22 -p 10000:8080 --name snops_jenkins --rm -it -e SNOPS_GH_BRANCH=master f5devcentral/f5-super-netops-container:jenkins\" > /home/ubuntu/snops_docker_run_instructions.txt\n",
+								"echo \"#\n"							   							   
+							  ]
+							 ]
+							},
+						"group": "root",
+						"mode": "000755",
+						"owner": "root"
+					   }					   
 				   },
 					"commands": {
                             "000-just-cheching": {

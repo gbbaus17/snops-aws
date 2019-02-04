@@ -285,10 +285,10 @@
                             }
                         },
                         "files": {
-                            "C:\\Users\\Administrator\\Desktop\\postman-install.exe": {
+                            "c:\\users\\administrator\\desktop\\postman-install.exe": {
                                 "source": "https://dl.pstmn.io/download/latest/win64"
                             }
-                        },
+						},
                         "commands": {
                             "a_cmd_shortcut": {
                                 "command": "mklink \"c:\\users\\administrator\\desktop\\Command Prompt\" c:\\windows\\system32\\cmd.exe"
@@ -296,6 +296,9 @@
                             "b_create_putty_shortcut": {
                                 "command": "mklink c:\\users\\administrator\\desktop\\PuTTY \"c:\\Program Files\\PuTTY\\putty.exe\""
                             },
+						    "c_install_postman" : {
+							  "command" : "c:\\users\\administrator\\desktop\\postman-install.exe"
+						    },
                             "z_done": {
                                 "command": "echo \"DONE\" > C:\\users\\Administrator\\desktop\\READY.txt"
                             }
